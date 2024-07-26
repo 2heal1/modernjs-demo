@@ -1,13 +1,30 @@
 import { appTools, defineConfig } from '@modern-js/app-tools';
+import { moduleFederationPlugin } from '@module-federation/modern-js';
+import InjectPlugin from './rspackconig';
 
 // https://modernjs.dev/en/configure/app/usage
 export default defineConfig({
+  dev: {
+    // FIXME: it should be removed , related issue: https://github.com/web-infra-dev/modern.js/issues/5999
+    host: '0.0.0.0',
+    writeToDisk: true,
+  },
   runtime: {
     router: true,
   },
+  server: {
+    ssr: {
+      mode: 'stream',
+    },
+    port: 3007,
+  },
   plugins: [
-    appTools({
-      bundler: 'webpack', // Set to 'experimental-rspack' to enable rspack ⚡️🦀
-    }),
+    appTools({ bundler: 'experimental-rspack' }),
+    moduleFederationPlugin(),
   ],
+  tools: {
+    rspack: config => {
+      // config.plugins?.push(new InjectPlugin());
+    },
+  },
 });
