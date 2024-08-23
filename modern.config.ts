@@ -1,30 +1,34 @@
 import { appTools, defineConfig } from '@modern-js/app-tools';
-import { moduleFederationPlugin } from '@module-federation/modern-js';
-import InjectPlugin from './rspackconig';
-
+import { ModuleFederationPlugin } from '@module-federation/enhanced/rspack';
 // https://modernjs.dev/en/configure/app/usage
 export default defineConfig({
   dev: {
-    // FIXME: it should be removed , related issue: https://github.com/web-infra-dev/modern.js/issues/5999
-    host: '0.0.0.0',
     writeToDisk: true,
   },
   runtime: {
     router: true,
   },
-  server: {
-    ssr: {
-      mode: 'stream',
-    },
-    port: 3007,
-  },
-  plugins: [
-    appTools({ bundler: 'experimental-rspack' }),
-    moduleFederationPlugin(),
-  ],
+
+  plugins: [appTools({ bundler: 'experimental-rspack' })],
   tools: {
-    rspack: config => {
-      // config.plugins?.push(new InjectPlugin());
+    rspack(config) {
+      delete config.optimization!.runtimeChunk;
+      config.plugins?.push(
+        new ModuleFederationPlugin({
+          name: 'provider',
+          filename: 'remoteEntry.js',
+          shared: {
+            'external-package-version-display': '2.1.4',
+            'external-package-version-display-2': '1.0.0',
+          },
+          remotes: {
+            'mfe-remote-2': 'mfe_remote_2@http://localhost:3002/remoteEntry.js',
+          },
+          exposes: {
+            './bootstrap': './src/routes/page.tsx',
+          },
+        }),
+      );
     },
   },
 });

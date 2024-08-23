@@ -1,37 +1,39 @@
-# Modern.js App
-
-## Setup
-
-Install the dependencies:
+# how to reproduce
 
 ```bash
-pnpm install
-```
-
-## Get Started
-
-Start the dev server:
-
-```bash
+# instal deps
+pnpm i
+# start project
 pnpm dev
+
+# serarch scopeToSharingDataMapping in dist/remoteEntry.js:
+```js
+        __webpack_require__.initializeSharingData = {
+            scopeToSharingDataMapping: {
+                "default": [{
+                    name: "external-package-version-display-2",
+                    version: "1.0.0",
+                    factory: () => xxxxx,
+                    eager: 0,
+                    requiredVersion: "1.0.0"
+                }, {
+                    name: "external-package-version-display-2",
+                    version: "1.0.1",
+                    factory: () => xxx,
+                    eager: 0,
+                    // FIXME: This should be `^1.0.1`
+                    requiredVersion: "1.0.0"
+                }, {
+                    name: "external-package-version-display",
+                    version: "2.1.4",
+                    factory: () =>xxx,
+                    eager: 0,
+                    requiredVersion: "2.1.4"
+                }]
+            },
+            uniqueName: "modernjs-ssr-host"
+        };
 ```
 
-Enable optional features or add a new entry:
 
-```bash
-pnpm new
 ```
-
-Build the app for production:
-
-```bash
-pnpm build
-```
-
-Preview the production build locally:
-
-```bash
-pnpm serve
-```
-
-For more information, see the [Modern.js documentation](https://modernjs.dev/en).
